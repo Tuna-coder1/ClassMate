@@ -4359,3 +4359,212 @@ html[data-theme="dark"] .assignment-check-btn,
 @media (max-width:700px) {
   .notification-browser-btn { width:100%; }
 }
+
+/* ==========================================================
+   FIX — SETTINGS RESPONSIVE LAYOUT
+   Prevent the setup summary from covering Appearance on
+   small screens. Keeps the existing Liquid Glass design.
+========================================================== */
+@media (max-width: 900px) {
+  .settings-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .settings-summary {
+    position: relative;
+    top: auto;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 600px) {
+  .settings-layout {
+    gap: 14px;
+  }
+
+  .settings-panel {
+    padding: 17px;
+  }
+
+  .settings-summary {
+    padding: 18px;
+    margin-top: 0;
+  }
+
+  .theme-options {
+    grid-template-columns: 1fr;
+  }
+
+  .theme-preview {
+    height: 68px;
+  }
+}
+
+@media (max-width: 420px) {
+  .settings-panel-title > div {
+    gap: 9px;
+  }
+
+  .settings-panel-title > div > span {
+    width: 36px;
+    height: 36px;
+  }
+
+  .settings-row {
+    gap: 10px;
+  }
+
+  .settings-select {
+    width: 112px;
+    flex: 0 0 112px;
+  }
+}
+
+/* ============================================================
+   CLASSMATE — COMPACT MOBILE HOME DASHBOARD
+   Keeps Liquid Glass, reduces vertical space on narrow screens.
+   ============================================================ */
+@media (max-width: 560px) {
+  .home-dashboard {
+    width: 100%;
+  }
+
+  .home-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .home-stat-card {
+    min-height: 82px;
+    height: 82px;
+    padding: 12px;
+    gap: 9px;
+    border-radius: 19px;
+  }
+
+  .home-stat-icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    border-radius: 13px;
+    font-size: 19px;
+  }
+
+  .home-stat-card span {
+    margin-bottom: 3px;
+    font-size: 10px;
+    line-height: 1.15;
+  }
+
+  .home-stat-card strong {
+    font-size: 21px;
+  }
+
+  .home-stat-next strong {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 380px) {
+  .home-stats-grid {
+    gap: 8px;
+  }
+
+  .home-stat-card {
+    min-height: 76px;
+    height: 76px;
+    padding: 10px;
+    gap: 7px;
+    border-radius: 17px;
+  }
+
+  .home-stat-icon {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+    border-radius: 11px;
+    font-size: 17px;
+  }
+
+  .home-stat-card span {
+    font-size: 9px;
+  }
+
+  .home-stat-card strong {
+    font-size: 19px;
+  }
+
+  .home-stat-next strong {
+    font-size: 14px;
+  }
+}
+
+
+/* ============================================================
+   FIX — COMPACT MOBILE QUICK ACTIONS
+   Prevents Quick Actions cards from taking excessive vertical
+   space on narrow screens. Keeps the existing Liquid Glass UI.
+============================================================ */
+@media (max-width: 560px) {
+  .home-actions-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .home-action-card {
+    min-height: 96px;
+    height: 96px;
+    padding: 13px;
+    border-radius: 18px;
+  }
+
+  .home-action-icon {
+    width: 34px;
+    height: 34px;
+    margin-bottom: 8px;
+    border-radius: 11px;
+    font-size: 17px;
+  }
+
+  .home-action-card strong {
+    margin-bottom: 2px;
+    font-size: 13px;
+    line-height: 1.15;
+  }
+
+  .home-action-card small {
+    font-size: 9.5px;
+    line-height: 1.25;
+  }
+}
+
+@media (max-width: 380px) {
+  .home-actions-grid {
+    gap: 8px;
+  }
+
+  .home-action-card {
+    min-height: 88px;
+    height: 88px;
+    padding: 10px;
+    border-radius: 16px;
+  }
+
+  .home-action-icon {
+    width: 30px;
+    height: 30px;
+    margin-bottom: 6px;
+    border-radius: 10px;
+    font-size: 15px;
+  }
+
+  .home-action-card strong {
+    font-size: 12px;
+  }
+
+  .home-action-card small {
+    font-size: 9px;
+  }
+}

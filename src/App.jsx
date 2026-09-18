@@ -504,8 +504,39 @@ function App() {
   }
 
   try {
-    // Supabase ใช้ Email สำหรับ Login
-    const loginEmail = cleanUsername.toLowerCase();
+    // Supabase Auth signs in with email + password.
+    // If the user entered a username, first resolve that username
+    // to the matching email through a secure Supabase RPC function.
+    let loginEmail = cleanUsername.toLowerCase();
+
+    if (!cleanUsername.includes("@")) {
+      const { data: usernameResult, error: usernameError } = await supabase.rpc(
+        "get_login_email_by_username",
+        { login_username: cleanUsername }
+      );
+
+      if (usernameError) {
+        console.error("Username lookup error:", usernameError);
+
+        alert(
+          language === "en"
+            ? "Could not look up this username. Please try again."
+            : "ไม่สามารถค้นหาชื่อผู้ใช้นี้ได้ กรุณาลองใหม่อีกครั้ง"
+        );
+        return;
+      }
+
+      if (!usernameResult) {
+        alert(
+          language === "en"
+            ? "Username not found."
+            : "ไม่พบชื่อผู้ใช้นี้"
+        );
+        return;
+      }
+
+      loginEmail = String(usernameResult).trim().toLowerCase();
+    }
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email: loginEmail,
@@ -517,8 +548,8 @@ function App() {
 
       alert(
         language === "en"
-          ? error.message
-          : "เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจสอบอีเมลและรหัสผ่าน"
+          ? "Login failed. Please check your username/email and password."
+          : "เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจสอบชื่อผู้ใช้/อีเมลและรหัสผ่าน"
       );
       return;
     }
@@ -1153,27 +1184,6 @@ function App() {
   const isAssignmentOverdue = (item) =>
     item.status !== "completed" && getAssignmentDueTimestamp(item) < currentTime.getTime();
 
-  // IMPORTANT: These filter helpers must be declared before filteredAssignments.
-  // Otherwise Today / Next 7 days can hit the JavaScript temporal dead zone
-  // and the React page becomes blank.
-  const getDaysUntilDue = (item) => {
-    if (!item.dueDate) return null;
-    const due = new Date(`${item.dueDate}T00:00:00`);
-    if (Number.isNaN(due.getTime())) return null;
-
-    const today = new Date(currentTime);
-    today.setHours(0, 0, 0, 0);
-
-    return Math.ceil((due.getTime() - today.getTime()) / 86400000);
-  };
-
-  const isAssignmentToday = (item) => getDaysUntilDue(item) === 0;
-
-  const isAssignmentWithin7Days = (item) => {
-    const days = getDaysUntilDue(item);
-    return days !== null && days >= 0 && days <= 7;
-  };
-
   const filteredAssignments = [...assignments]
     .filter((item) => {
       if (assignmentFilter === "pending") return item.status !== "completed";
@@ -1199,6 +1209,14 @@ function App() {
     .filter((item) => !isAssignmentOverdue(item))
     .sort((a, b) => getAssignmentDueTimestamp(a) - getAssignmentDueTimestamp(b));
 
+  const getDaysUntilDue = (item) => {
+    if (!item.dueDate) return null;
+    const due = new Date(`${item.dueDate}T00:00:00`);
+    if (Number.isNaN(due.getTime())) return null;
+    const today = new Date(currentTime);
+    today.setHours(0, 0, 0, 0);
+    return Math.ceil((due.getTime() - today.getTime()) / 86400000);
+  };
 
   const getAssignmentCountdown = (item) => {
     if (item.status === "completed") return language === "en" ? "Completed" : "เสร็จแล้ว";
@@ -1216,6 +1234,11 @@ function App() {
     return language === "en" ? `${days} days left` : `เหลือ ${days} วัน`;
   };
 
+  const isAssignmentToday = (item) => getDaysUntilDue(item) === 0;
+  const isAssignmentWithin7Days = (item) => {
+    const days = getDaysUntilDue(item);
+    return days !== null && days >= 0 && days <= 7;
+  };
 
   const updateAssignmentProgress = async (id, value) => {
     if (!currentUserId) return;
@@ -1987,8 +2010,8 @@ function App() {
             <div className="input-group">
               <label htmlFor="username">
                 {language === "en"
-                  ? "Username"
-                  : "ชื่อผู้ใช้"}
+                  ? "Username / Email"
+                  : "ชื่อผู้ใช้ / อีเมล"}
               </label>
 
               <input
@@ -2128,40 +2151,6 @@ function App() {
                 <div>
                   <span>{language === "en" ? "Next Class" : "คาบถัดไป"}</span>
                   <strong>{nextTodayClass ? nextTodayClass.time : "—"}</strong>
-                </div>
-              </div>
-            </section>
-
-            <section className="home-stats-grid home-assignment-summary-grid">
-              <div className="home-stat-card">
-                <div className="home-stat-icon">📝</div>
-                <div>
-                  <span>{language === "en" ? "Assignments" : "งานทั้งหมด"}</span>
-                  <strong>{assignments.length}</strong>
-                </div>
-              </div>
-
-              <div className="home-stat-card">
-                <div className="home-stat-icon">🎯</div>
-                <div>
-                  <span>{language === "en" ? "Due Today" : "ส่งวันนี้"}</span>
-                  <strong>{smartAssignmentBuckets.today.length}</strong>
-                </div>
-              </div>
-
-              <div className="home-stat-card">
-                <div className="home-stat-icon">📅</div>
-                <div>
-                  <span>{language === "en" ? "Next 7 Days" : "7 วันข้างหน้า"}</span>
-                  <strong>{smartAssignmentBuckets.next7.length}</strong>
-                </div>
-              </div>
-
-              <div className="home-stat-card">
-                <div className="home-stat-icon">📈</div>
-                <div>
-                  <span>{language === "en" ? "Progress" : "ความคืบหน้า"}</span>
-                  <strong>{assignmentProgressTotal}%</strong>
                 </div>
               </div>
             </section>
