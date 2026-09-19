@@ -4632,3 +4632,849 @@ html[data-theme="dark"] .assignment-check-btn,
     border-radius: 13px;
   }
 }
+
+/* ============================================================
+   CLASSMATE — PREMIUM PROTOTYPE
+   No real payment. Local demo status only.
+   ============================================================ */
+
+.premium-page {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.premium-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
+  padding: 26px 28px;
+  border: 1px solid rgba(255,255,255,.68);
+  border-radius: 28px;
+  background: linear-gradient(135deg, rgba(255,255,255,.48), rgba(255,255,255,.22));
+  box-shadow: inset 0 1px 2px rgba(255,255,255,.85), 0 18px 45px rgba(100,110,160,.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.premium-eyebrow,
+.premium-status-label {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  color: rgba(70,55,120,.62);
+}
+
+.premium-hero h2 {
+  margin: 8px 0 5px;
+  font-family: Georgia,"Times New Roman",serif;
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.05;
+}
+
+.premium-hero p {
+  margin: 0;
+  color: rgba(20,20,20,.58);
+}
+
+.premium-hero-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 76px;
+  width: 76px;
+  height: 76px;
+  border: 1px solid rgba(255,255,255,.78);
+  border-radius: 24px;
+  background: rgba(255,255,255,.42);
+  font-size: 38px;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,.9);
+}
+
+.premium-status-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding: 18px 20px;
+  border: 1px solid rgba(255,255,255,.68);
+  border-radius: 22px;
+  background: rgba(255,255,255,.30);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.premium-status-card h3 {
+  margin: 5px 0 2px;
+  font-size: 24px;
+}
+
+.premium-status-card p {
+  margin: 0;
+  color: rgba(20,20,20,.55);
+  font-size: 13px;
+}
+
+.premium-active-pill,
+.premium-current-plan,
+.premium-menu-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.premium-active-pill {
+  padding: 7px 11px;
+  background: rgba(155,120,255,.16);
+  color: rgba(75,45,145,.85);
+}
+
+.premium-plans {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.premium-plan-card {
+  position: relative;
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid rgba(255,255,255,.70);
+  border-radius: 26px;
+  background: rgba(255,255,255,.30);
+  box-shadow: inset 0 1px 2px rgba(255,255,255,.86), 0 16px 40px rgba(80,90,140,.07);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.premium-plan-featured {
+  border-color: rgba(160,135,255,.42);
+  background: linear-gradient(145deg, rgba(255,255,255,.52), rgba(226,217,255,.27));
+}
+
+.premium-popular {
+  display: inline-flex;
+  margin-bottom: 12px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: rgba(160,135,255,.15);
+  color: rgba(75,45,145,.82);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.premium-plan-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.premium-plan-head > span {
+  font-size: 30px;
+}
+
+.premium-plan-head h3 {
+  margin: 0;
+  font-size: 23px;
+}
+
+.premium-plan-head p {
+  margin: 3px 0 0;
+  color: rgba(20,20,20,.52);
+  font-size: 12px;
+}
+
+.premium-price {
+  margin: 20px 0 2px;
+  font-size: 32px;
+  font-weight: 900;
+}
+
+.premium-price small {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(20,20,20,.48);
+}
+
+.premium-alt-price {
+  margin-bottom: 14px;
+  color: rgba(75,45,145,.75);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.premium-plan-card ul {
+  display: grid;
+  gap: 9px;
+  margin: 16px 0 20px;
+  padding: 0;
+  list-style: none;
+}
+
+.premium-plan-card li {
+  color: rgba(20,20,20,.78);
+  font-size: 13px;
+}
+
+.premium-plan-card li::first-letter {
+  font-size: 14px;
+}
+
+.premium-disabled {
+  color: rgba(20,20,20,.38) !important;
+}
+
+.premium-current-plan {
+  padding: 7px 10px;
+  background: rgba(20,20,20,.07);
+  color: rgba(20,20,20,.52);
+}
+
+.premium-demo-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.premium-upgrade-btn,
+.premium-year-btn,
+.premium-reset-btn,
+.premium-small-btn {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid rgba(255,255,255,.70);
+  border-radius: 14px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform .18s ease, background .18s ease;
+}
+
+.premium-upgrade-btn {
+  background: rgba(145,115,255,.20);
+  color: rgba(65,40,135,.92);
+}
+
+.premium-year-btn,
+.premium-reset-btn,
+.premium-small-btn {
+  background: rgba(255,255,255,.35);
+  color: rgba(20,20,20,.72);
+}
+
+.premium-upgrade-btn:hover,
+.premium-year-btn:hover,
+.premium-reset-btn:hover,
+.premium-small-btn:hover {
+  transform: translateY(-1px);
+}
+
+.premium-demo-note {
+  margin-top: 18px;
+  padding: 13px 15px;
+  border: 1px dashed rgba(120,100,170,.28);
+  border-radius: 16px;
+  background: rgba(255,255,255,.22);
+  color: rgba(20,20,20,.58);
+  font-size: 12px;
+}
+
+.premium-lock-card {
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  padding: 22px 16px;
+  text-align: center;
+  border: 1px dashed rgba(130,110,180,.28);
+  border-radius: 18px;
+  background: rgba(255,255,255,.20);
+}
+
+.premium-lock-icon {
+  font-size: 28px;
+}
+
+.premium-lock-card strong {
+  font-size: 14px;
+}
+
+.premium-lock-card p {
+  margin: 0;
+  color: rgba(20,20,20,.52);
+  font-size: 12px;
+}
+
+.premium-small-btn {
+  width: auto;
+  padding: 8px 13px;
+}
+
+.premium-menu-badge {
+  margin-left: auto;
+  padding: 4px 7px;
+  background: rgba(160,135,255,.18);
+  color: rgba(75,45,145,.85);
+}
+
+.theme-dark .premium-hero,
+.theme-dark .premium-status-card,
+.theme-dark .premium-plan-card,
+.theme-dark .premium-demo-note,
+.theme-dark .premium-lock-card {
+  background: rgba(25,25,35,.42);
+  border-color: rgba(255,255,255,.12);
+}
+
+.theme-dark .premium-hero p,
+.theme-dark .premium-status-card p,
+.theme-dark .premium-plan-head p,
+.theme-dark .premium-price small,
+.theme-dark .premium-plan-card li,
+.theme-dark .premium-demo-note,
+.theme-dark .premium-lock-card p {
+  color: rgba(255,255,255,.62);
+}
+
+.theme-dark .premium-plan-featured {
+  background: rgba(80,65,120,.26);
+}
+
+.theme-dark .premium-upgrade-btn,
+.theme-dark .premium-year-btn,
+.theme-dark .premium-reset-btn,
+.theme-dark .premium-small-btn {
+  color: rgba(255,255,255,.88);
+  border-color: rgba(255,255,255,.14);
+}
+
+@media (max-width: 760px) {
+  .premium-plans {
+    grid-template-columns: 1fr;
+  }
+
+  .premium-hero {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 520px) {
+  .premium-page {
+    width: 100%;
+  }
+
+  .premium-hero {
+    padding: 17px;
+    border-radius: 20px;
+  }
+
+  .premium-hero h2 {
+    font-size: 27px;
+  }
+
+  .premium-hero p {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .premium-hero-icon {
+    flex-basis: 58px;
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+    font-size: 28px;
+  }
+
+  .premium-status-card,
+  .premium-plan-card {
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .premium-plan-head h3 {
+    font-size: 20px;
+  }
+
+  .premium-price {
+    font-size: 28px;
+  }
+}
+
+
+/* ==================================================
+   DESIGN SWITCH — GLASSMORPHISM / LIQUID GLASS
+================================================== */
+
+.design-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 17px;
+}
+
+.design-option {
+  position: relative;
+  padding: 11px;
+  text-align: left;
+  border: 1px solid rgba(255,255,255,.62);
+  border-radius: 19px;
+  background: rgba(255,255,255,.19);
+  cursor: pointer;
+  color: inherit;
+  transition: .2s ease;
+}
+
+.design-option:hover {
+  transform: translateY(-3px);
+  background: rgba(255,255,255,.37);
+}
+
+.design-option.active {
+  border-color: rgba(100,130,160,.40);
+  box-shadow: 0 0 0 3px rgba(140,170,195,.10), inset 0 1px 0 rgba(255,255,255,.95);
+}
+
+.design-option.locked {
+  opacity: .78;
+}
+
+.design-preview {
+  height: 82px;
+  padding: 12px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  border-radius: 14px;
+  margin-bottom: 11px;
+  overflow: hidden;
+  position: relative;
+}
+
+.design-preview i {
+  font-style: normal;
+  font-size: 18px;
+}
+
+.design-preview b {
+  font-family: Georgia, serif;
+  font-size: 11px;
+}
+
+.design-preview em {
+  position: absolute;
+  left: 10px;
+  bottom: 9px;
+  font-style: normal;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.design-preview-glassmorphism {
+  color: #17222c;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.78), rgba(255,255,255,.36)),
+    linear-gradient(135deg, #dbeeff, #f5eaff 55%, #dcf7ef);
+  border: 1px solid rgba(255,255,255,.86);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.design-preview-liquid {
+  color: #182032;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255,255,255,.90), transparent 30%),
+    radial-gradient(circle at 85% 10%, rgba(190,220,255,.70), transparent 35%),
+    radial-gradient(circle at 75% 85%, rgba(215,190,255,.65), transparent 35%),
+    linear-gradient(135deg, rgba(255,255,255,.42), rgba(225,240,255,.20));
+  border: 1px solid rgba(255,255,255,.88);
+  backdrop-filter: blur(24px) saturate(165%);
+  -webkit-backdrop-filter: blur(24px) saturate(165%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 10px 24px rgba(60,80,110,.10);
+}
+
+.design-option strong {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: 13px;
+}
+
+.design-option small {
+  display: block;
+  margin-top: 3px;
+  color: rgba(20,20,20,.46);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.design-premium-note {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 13px;
+  background: rgba(145,125,230,.10);
+  border: 1px solid rgba(145,125,230,.18);
+  color: rgba(65,52,110,.72);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+/* Free/basic visual style: clean frosted Glassmorphism without the
+   animated liquid atmosphere. Liquid Glass remains the existing
+   Premium visual treatment. */
+.app.design-glassmorphism {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 12% 16%, rgba(255,255,255,.92) 0 8%, transparent 34%),
+    radial-gradient(circle at 88% 18%, rgba(215,232,255,.58) 0 8%, transparent 34%),
+    linear-gradient(135deg, #edf4f8 0%, #f8fafc 48%, #edf2f8 100%);
+}
+
+.app.design-glassmorphism::before,
+.app.design-glassmorphism::after {
+  animation: none;
+  filter: blur(28px);
+  opacity: .30;
+}
+
+.app.design-glassmorphism::before {
+  background: radial-gradient(circle at 40% 40%, rgba(160,205,240,.40), transparent 66%);
+}
+
+.app.design-glassmorphism::after {
+  background: radial-gradient(circle at 45% 45%, rgba(205,185,235,.32), transparent 66%);
+}
+
+.app.design-glassmorphism .header {
+  background: rgba(255,255,255,.48) !important;
+  backdrop-filter: blur(18px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(120%) !important;
+  box-shadow: 0 8px 28px rgba(60,80,100,.07), inset 0 1px 0 rgba(255,255,255,.86) !important;
+}
+
+.app.design-glassmorphism .sidebar {
+  background: rgba(255,255,255,.58) !important;
+  backdrop-filter: blur(20px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(120%) !important;
+  box-shadow: 0 24px 60px rgba(35,55,75,.12), inset 0 1px 0 rgba(255,255,255,.88) !important;
+}
+
+.app.design-glassmorphism .login-card,
+.app.design-glassmorphism .home-welcome,
+.app.design-glassmorphism .home-card,
+.app.design-glassmorphism .today-card,
+.app.design-glassmorphism .profile-row,
+.app.design-glassmorphism .profile-upload,
+.app.design-glassmorphism .class-form-card,
+.app.design-glassmorphism .classes-card,
+.app.design-glassmorphism .schedule-card,
+.app.design-glassmorphism .settings-card,
+.app.design-glassmorphism .form-card,
+.app.design-glassmorphism .info-card,
+.app.design-glassmorphism .settings-panel,
+.app.design-glassmorphism .settings-summary,
+.app.design-glassmorphism .premium-hero,
+.app.design-glassmorphism .premium-status-card,
+.app.design-glassmorphism .premium-plan-card {
+  backdrop-filter: blur(18px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(125%) !important;
+  box-shadow: 0 14px 38px rgba(50,70,90,.07), inset 0 1px 0 rgba(255,255,255,.90) !important;
+}
+
+/* Premium Liquid Glass is the existing richer treatment. */
+.app.design-liquid .header {
+  backdrop-filter: blur(32px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(160%) !important;
+}
+
+.app.design-liquid .sidebar,
+.app.design-liquid .login-card,
+.app.design-liquid .home-welcome,
+.app.design-liquid .home-card,
+.app.design-liquid .today-card,
+.app.design-liquid .profile-row,
+.app.design-liquid .profile-upload,
+.app.design-liquid .class-form-card,
+.app.design-liquid .classes-card,
+.app.design-liquid .schedule-card,
+.app.design-liquid .settings-card,
+.app.design-liquid .form-card,
+.app.design-liquid .info-card,
+.app.design-liquid .settings-panel,
+.app.design-liquid .settings-summary {
+  backdrop-filter: blur(30px) saturate(155%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(155%) !important;
+}
+
+.app.theme-dark .design-option small,
+.app.theme-dark .design-premium-note {
+  color: rgba(255,255,255,.62);
+}
+
+.app.theme-dark .design-option {
+  background: rgba(25,34,44,.36);
+  border-color: rgba(255,255,255,.13);
+}
+
+.app.theme-dark .design-option.active {
+  border-color: rgba(180,200,230,.30);
+}
+
+.app.theme-dark .design-premium-note {
+  background: rgba(145,125,230,.16);
+  border-color: rgba(180,160,255,.20);
+}
+
+@media (max-width: 760px) {
+  .design-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .design-preview {
+    height: 72px;
+  }
+
+  .design-option {
+    border-radius: 17px;
+  }
+}
+
+/* ==================================================
+   DESIGN SWITCH — FINAL VISUAL SEPARATION
+   Glassmorphism = Free baseline
+   Liquid Glass = Premium richer atmosphere
+================================================== */
+
+/* Glassmorphism: flatter frosted surfaces, restrained glow,
+   clear borders and less visual movement. */
+.app.design-glassmorphism {
+  background:
+    radial-gradient(circle at 8% 10%, rgba(255,255,255,.92), transparent 30%),
+    radial-gradient(circle at 92% 12%, rgba(220,235,248,.58), transparent 32%),
+    linear-gradient(135deg, #edf3f7 0%, #f8fafc 52%, #edf2f6 100%) !important;
+}
+
+.app.design-glassmorphism::before,
+.app.design-glassmorphism::after {
+  animation: none !important;
+  filter: blur(34px) !important;
+}
+
+.app.design-glassmorphism::before {
+  background: radial-gradient(circle at 30% 35%, rgba(150,195,225,.28), transparent 68%) !important;
+  opacity: .55 !important;
+}
+
+.app.design-glassmorphism::after {
+  background: radial-gradient(circle at 75% 55%, rgba(195,205,220,.22), transparent 68%) !important;
+  opacity: .45 !important;
+}
+
+.app.design-glassmorphism .header,
+.app.design-glassmorphism .sidebar,
+.app.design-glassmorphism .login-card,
+.app.design-glassmorphism .home-welcome,
+.app.design-glassmorphism .home-card,
+.app.design-glassmorphism .today-card,
+.app.design-glassmorphism .profile-row,
+.app.design-glassmorphism .profile-upload,
+.app.design-glassmorphism .class-form-card,
+.app.design-glassmorphism .classes-card,
+.app.design-glassmorphism .schedule-card,
+.app.design-glassmorphism .settings-card,
+.app.design-glassmorphism .form-card,
+.app.design-glassmorphism .info-card,
+.app.design-glassmorphism .settings-panel,
+.app.design-glassmorphism .settings-summary,
+.app.design-glassmorphism .settings-hero,
+.app.design-glassmorphism .premium-hero,
+.app.design-glassmorphism .premium-status-card,
+.app.design-glassmorphism .premium-plan-card,
+.app.design-glassmorphism .home-stat-card,
+.app.design-glassmorphism .home-next-card,
+.app.design-glassmorphism .home-today-item,
+.app.design-glassmorphism .home-weekly-card,
+.app.design-glassmorphism .home-weekly-day,
+.app.design-glassmorphism .home-action-card {
+  background: rgba(255,255,255,.48) !important;
+  border-color: rgba(255,255,255,.82) !important;
+  backdrop-filter: blur(18px) saturate(115%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(115%) !important;
+  box-shadow:
+    0 10px 28px rgba(65,82,98,.07),
+    inset 0 1px 0 rgba(255,255,255,.90) !important;
+}
+
+.app.design-glassmorphism .header {
+  background: rgba(255,255,255,.62) !important;
+}
+
+.app.design-glassmorphism .sidebar {
+  background: rgba(255,255,255,.72) !important;
+}
+
+.app.design-glassmorphism .menu-btn,
+.app.design-glassmorphism .language-btn,
+.app.design-glassmorphism .notification-btn {
+  background: rgba(255,255,255,.60) !important;
+  backdrop-filter: blur(14px) saturate(110%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(110%) !important;
+}
+
+/* Liquid Glass: restore the richer premium atmosphere and make
+   the difference from the free design obvious. */
+.app.design-liquid {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(110,220,255,.30), transparent 35%),
+    radial-gradient(circle at 82% 16%, rgba(190,150,255,.32), transparent 36%),
+    radial-gradient(circle at 55% 95%, rgba(170,225,255,.24), transparent 40%),
+    linear-gradient(135deg, #e7f8ff 0%, #eef5ff 48%, #eee7ff 100%) !important;
+}
+
+.app.design-liquid::before,
+.app.design-liquid::after {
+  animation: liquidFloat 14s ease-in-out infinite alternate !important;
+  filter: blur(42px) !important;
+  opacity: .72 !important;
+}
+
+.app.design-liquid::before {
+  background: radial-gradient(circle at 35% 35%, rgba(95,210,255,.42), transparent 66%) !important;
+}
+
+.app.design-liquid::after {
+  background: radial-gradient(circle at 70% 45%, rgba(190,145,255,.42), transparent 66%) !important;
+}
+
+.app.design-liquid .header,
+.app.design-liquid .sidebar,
+.app.design-liquid .login-card,
+.app.design-liquid .home-welcome,
+.app.design-liquid .home-card,
+.app.design-liquid .today-card,
+.app.design-liquid .profile-row,
+.app.design-liquid .profile-upload,
+.app.design-liquid .class-form-card,
+.app.design-liquid .classes-card,
+.app.design-liquid .schedule-card,
+.app.design-liquid .settings-card,
+.app.design-liquid .form-card,
+.app.design-liquid .info-card,
+.app.design-liquid .settings-panel,
+.app.design-liquid .settings-summary,
+.app.design-liquid .settings-hero,
+.app.design-liquid .premium-hero,
+.app.design-liquid .premium-status-card,
+.app.design-liquid .premium-plan-card,
+.app.design-liquid .home-stat-card,
+.app.design-liquid .home-next-card,
+.app.design-liquid .home-today-item,
+.app.design-liquid .home-weekly-card,
+.app.design-liquid .home-weekly-day,
+.app.design-liquid .home-action-card {
+  background: rgba(255,255,255,.30) !important;
+  border-color: rgba(255,255,255,.72) !important;
+  backdrop-filter: blur(30px) saturate(155%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(155%) !important;
+  box-shadow:
+    0 18px 46px rgba(70,105,145,.11),
+    inset 0 1px 0 rgba(255,255,255,.92),
+    inset 0 -1px 0 rgba(180,200,255,.10) !important;
+}
+
+/* Dark mode remains readable in both design modes. */
+.app.theme-dark.design-glassmorphism {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(90,115,135,.22), transparent 32%),
+    radial-gradient(circle at 88% 18%, rgba(90,75,125,.20), transparent 34%),
+    linear-gradient(135deg, #141c24 0%, #1b2530 52%, #151d27 100%) !important;
+}
+
+.app.theme-dark.design-glassmorphism::before,
+.app.theme-dark.design-glassmorphism::after {
+  opacity: .22 !important;
+}
+
+.app.theme-dark.design-glassmorphism .header,
+.app.theme-dark.design-glassmorphism .sidebar,
+.app.theme-dark.design-glassmorphism .login-card,
+.app.theme-dark.design-glassmorphism .home-welcome,
+.app.theme-dark.design-glassmorphism .home-card,
+.app.theme-dark.design-glassmorphism .today-card,
+.app.theme-dark.design-glassmorphism .profile-row,
+.app.theme-dark.design-glassmorphism .profile-upload,
+.app.theme-dark.design-glassmorphism .class-form-card,
+.app.theme-dark.design-glassmorphism .classes-card,
+.app.theme-dark.design-glassmorphism .schedule-card,
+.app.theme-dark.design-glassmorphism .settings-card,
+.app.theme-dark.design-glassmorphism .form-card,
+.app.theme-dark.design-glassmorphism .info-card,
+.app.theme-dark.design-glassmorphism .settings-panel,
+.app.theme-dark.design-glassmorphism .settings-summary,
+.app.theme-dark.design-glassmorphism .settings-hero,
+.app.theme-dark.design-glassmorphism .premium-hero,
+.app.theme-dark.design-glassmorphism .premium-status-card,
+.app.theme-dark.design-glassmorphism .premium-plan-card,
+.app.theme-dark.design-glassmorphism .home-stat-card,
+.app.theme-dark.design-glassmorphism .home-next-card,
+.app.theme-dark.design-glassmorphism .home-today-item,
+.app.theme-dark.design-glassmorphism .home-weekly-card,
+.app.theme-dark.design-glassmorphism .home-weekly-day,
+.app.theme-dark.design-glassmorphism .home-action-card {
+  background: rgba(28,38,49,.56) !important;
+  border-color: rgba(255,255,255,.14) !important;
+  box-shadow:
+    0 14px 34px rgba(0,0,0,.16),
+    inset 0 1px 0 rgba(255,255,255,.10) !important;
+}
+
+.app.theme-dark.design-liquid {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(55,150,185,.24), transparent 35%),
+    radial-gradient(circle at 82% 16%, rgba(120,90,175,.28), transparent 36%),
+    linear-gradient(135deg, #101923 0%, #182431 48%, #1c1830 100%) !important;
+}
+
+.app.theme-dark.design-liquid .header,
+.app.theme-dark.design-liquid .sidebar,
+.app.theme-dark.design-liquid .login-card,
+.app.theme-dark.design-liquid .home-welcome,
+.app.theme-dark.design-liquid .home-card,
+.app.theme-dark.design-liquid .today-card,
+.app.theme-dark.design-liquid .profile-row,
+.app.theme-dark.design-liquid .profile-upload,
+.app.theme-dark.design-liquid .class-form-card,
+.app.theme-dark.design-liquid .classes-card,
+.app.theme-dark.design-liquid .schedule-card,
+.app.theme-dark.design-liquid .settings-card,
+.app.theme-dark.design-liquid .form-card,
+.app.theme-dark.design-liquid .info-card,
+.app.theme-dark.design-liquid .settings-panel,
+.app.theme-dark.design-liquid .settings-summary,
+.app.theme-dark.design-liquid .settings-hero,
+.app.theme-dark.design-liquid .premium-hero,
+.app.theme-dark.design-liquid .premium-status-card,
+.app.theme-dark.design-liquid .premium-plan-card,
+.app.theme-dark.design-liquid .home-stat-card,
+.app.theme-dark.design-liquid .home-next-card,
+.app.theme-dark.design-liquid .home-today-item,
+.app.theme-dark.design-liquid .home-weekly-card,
+.app.theme-dark.design-liquid .home-weekly-day,
+.app.theme-dark.design-liquid .home-action-card {
+  background: rgba(24,33,45,.42) !important;
+  border-color: rgba(255,255,255,.16) !important;
+  box-shadow:
+    0 18px 48px rgba(0,0,0,.18),
+    inset 0 1px 0 rgba(255,255,255,.12) !important;
+}

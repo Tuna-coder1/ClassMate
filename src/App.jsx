@@ -49,6 +49,7 @@ function App() {
 
   const defaultSettings = {
     theme: "light",
+    design: "glassmorphism",
     timeFormat: "24",
     weekStart: "monday",
     compactSchedule: false,
@@ -72,6 +73,97 @@ function App() {
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(next));
       return next;
     });
+  };
+
+  // ================= PREMIUM (PROTOTYPE / NO REAL PAYMENT) =================
+  const PREMIUM_KEY = "classmate_premium_status";
+  const PREMIUM_PLAN_KEY = "classmate_premium_plan";
+  const FREE_CLASS_LIMIT = 5;
+
+  const [isPremium, setIsPremium] = useState(() => localStorage.getItem(PREMIUM_KEY) === "premium");
+  const [premiumPlan, setPremiumPlan] = useState(() => localStorage.getItem(PREMIUM_PLAN_KEY) || "monthly");
+
+  const savePremiumDesignToSupabase = async (premiumEnabled, designValue) => {
+    if (!currentUserId) return;
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        premium_enabled: premiumEnabled,
+        design: designValue,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("user_id", currentUserId);
+
+    if (error) throw error;
+  };
+
+  const activatePremiumDemo = async (plan = "monthly") => {
+    try {
+      if (currentUserId) {
+        await savePremiumDesignToSupabase(true, settings.design === "liquid" ? "liquid" : "glass");
+      }
+
+      localStorage.setItem(PREMIUM_KEY, "premium");
+      localStorage.setItem(PREMIUM_PLAN_KEY, plan);
+      setPremiumPlan(plan);
+      setIsPremium(true);
+      setPage("premium");
+      setMenuOpen(false);
+    } catch (error) {
+      console.error("Could not activate Premium in Supabase:", error);
+      alert(language === "en" ? "Could not save Premium status. Please try again." : "ไม่สามารถบันทึกสถานะ Premium ได้ กรุณาลองใหม่อีกครั้ง");
+    }
+  };
+
+  const resetPremiumDemo = async () => {
+    try {
+      if (currentUserId) {
+        await savePremiumDesignToSupabase(false, "glass");
+      }
+
+      localStorage.removeItem(PREMIUM_KEY);
+      localStorage.removeItem(PREMIUM_PLAN_KEY);
+      setIsPremium(false);
+      setPremiumPlan("monthly");
+
+      // Liquid Glass is a Premium design. Returning to Free also returns
+      // the app to the free Glassmorphism design automatically.
+      setSettings((current) => {
+        const next = { ...current, design: "glassmorphism" };
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(next));
+        return next;
+      });
+    } catch (error) {
+      console.error("Could not reset Premium in Supabase:", error);
+      alert(language === "en" ? "Could not reset Premium status. Please try again." : "ไม่สามารถเปลี่ยนกลับเป็น Free ได้ กรุณาลองใหม่อีกครั้ง");
+    }
+  };
+
+  const selectDesign = async (design) => {
+    const nextDesign = design === "liquid" ? "liquid" : "glassmorphism";
+
+    if (design === "liquid" && !isPremium) {
+      alert(
+        language === "en"
+          ? "Liquid Glass is a Premium design. Try Premium to unlock it."
+          : "Liquid Glass เป็นดีไซน์สำหรับ Premium เท่านั้น กดทดลอง Premium เพื่อปลดล็อก"
+      );
+      setPage("premium");
+      setMenuOpen(false);
+      return;
+    }
+
+    updateSetting("design", nextDesign);
+
+    try {
+      if (currentUserId) {
+        await savePremiumDesignToSupabase(isPremium, nextDesign === "liquid" ? "liquid" : "glass");
+      }
+    } catch (error) {
+      console.error("Could not save Design in Supabase:", error);
+      alert(language === "en" ? "Design changed on this device, but could not be synced to your account." : "เปลี่ยนดีไซน์บนอุปกรณ์แล้ว แต่ยังซิงก์เข้าบัญชีไม่ได้");
+    }
   };
 
   // ================= BACKUP / RESTORE =================
@@ -383,6 +475,46 @@ function App() {
       setMajor(profile.major || "Computer Science");
       setInstitution(profile.institution || "ABC University");
       setProfileImage(profile.profile_image || "");
+
+      // Premium + Design are account-level settings stored in Supabase.
+      // Migrate the previous prototype's local Premium status once if needed.
+      const dbPremium = profile.premium_enabled === true;
+      const dbDesign = profile.design === "liquid" ? "liquid" : "glass";
+      const localPremium = localStorage.getItem(PREMIUM_KEY) === "premium";
+      const localDesign = localStorage.getItem(SETTINGS_KEY);
+      let cachedSettings = {};
+      try {
+        cachedSettings = JSON.parse(localDesign || "{}");
+      } catch {
+        cachedSettings = {};
+      }
+
+      const shouldMigrateLocalPremium = !dbPremium && localPremium;
+      const effectivePremium = shouldMigrateLocalPremium ? true : dbPremium;
+      const effectiveDesign = effectivePremium
+        ? (shouldMigrateLocalPremium && cachedSettings.design === "liquid" ? "liquid" : dbDesign)
+        : "glass";
+
+      setIsPremium(effectivePremium);
+      setPremiumPlan(localStorage.getItem(PREMIUM_PLAN_KEY) || "monthly");
+      setSettings((current) => {
+        const next = { ...current, design: effectiveDesign === "liquid" ? "liquid" : "glassmorphism" };
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(next));
+        return next;
+      });
+      localStorage.setItem(PREMIUM_KEY, effectivePremium ? "premium" : "free");
+
+      if (shouldMigrateLocalPremium) {
+        try {
+          await supabase
+            .from("profiles")
+            .update({ premium_enabled: true, design: effectiveDesign, updated_at: new Date().toISOString() })
+            .eq("user_id", user.id);
+        } catch (migrationError) {
+          console.warn("Premium prototype migration skipped:", migrationError);
+        }
+      }
+
       setClasses(dbClasses);
       setAssignments(dbAssignments);
 
@@ -737,6 +869,11 @@ function App() {
       return;
     }
 
+    if (!editingClassId && !isPremium && classes.length >= FREE_CLASS_LIMIT) {
+      alert(language === "en" ? `Free accounts can add up to ${FREE_CLASS_LIMIT} classes in this prototype. Upgrade to Premium for a higher limit.` : `บัญชี Free เพิ่มได้สูงสุด ${FREE_CLASS_LIMIT} รายวิชาในระบบทดลอง สมัคร Premium เพื่อเพิ่มจำนวนวิชาได้มากขึ้น`);
+      return;
+    }
+
     const payload = {
       user_id: currentUserId,
       username: editUsername.trim(),
@@ -745,6 +882,8 @@ function App() {
       major: editMajor.trim(),
       institution: editInstitution.trim(),
       profile_image: editImage || "",
+      premium_enabled: isPremium,
+      design: settings.design === "liquid" ? "liquid" : "glass",
       updated_at: new Date().toISOString(),
     };
 
@@ -893,6 +1032,48 @@ function App() {
       );
       return;
     }
+        // ==================================================
+    // PREMIUM — HIGHER CLASS LIMIT
+    // Free: maximum 5 classes
+    // Premium: unlimited classes
+    // Editing an existing class is always allowed.
+    // ==================================================
+
+    if (editingClassId === null) {
+      const [profileResult, classCountResult] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("premium_enabled")
+          .eq("user_id", currentUserId)
+          .maybeSingle(),
+
+        supabase
+          .from("classes")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", currentUserId),
+      ]);
+
+      if (profileResult.error) {
+        throw profileResult.error;
+      }
+
+      if (classCountResult.error) {
+        throw classCountResult.error;
+      }
+
+      const isPremium = profileResult.data?.premium_enabled === true;
+      const currentClassCount = classCountResult.count || 0;
+
+      if (!isPremium && currentClassCount >= 5) {
+        alert(
+          language === "en"
+            ? "Free accounts can have up to 5 classes. Upgrade to Premium to add unlimited classes."
+            : "บัญชี Free สามารถเพิ่มได้สูงสุด 5 วิชา อัปเกรดเป็น Premium เพื่อเพิ่มวิชาได้ไม่จำกัด"
+        );
+        return;
+      }
+    }
+
 
     const payload = {
       user_id: currentUserId,
@@ -1795,7 +1976,7 @@ function App() {
   }, [isLoggedIn, page]);
 
   return (
-    <div className={`app ${settings.theme === "dark" ? "theme-dark" : ""} ${settings.compactSchedule ? "compact-schedule" : ""}`}>
+    <div className={`app design-${settings.design === "liquid" ? "liquid" : "glassmorphism"} ${settings.theme === "dark" ? "theme-dark" : ""} ${settings.compactSchedule ? "compact-schedule" : ""}`}>
       {/* ==================================================
           HEADER
       ================================================== */}
@@ -1946,6 +2127,14 @@ function App() {
                     {pendingAssignments.length > 0 && (
                       <span className="sidebar-notification-count">{pendingAssignments.length > 9 ? "9+" : pendingAssignments.length}</span>
                     )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleMenuClick("premium")}
+                  >
+                    💎 {language === "en" ? "Premium" : "Premium"}
+                    {isPremium && <span className="premium-menu-badge">PRO</span>}
                   </button>
 
                   <button
@@ -3722,6 +3911,44 @@ function App() {
         ================================================== */}
 
 
+        {page === "premium" && (
+          <div className="premium-page">
+            <section className="premium-hero">
+              <div>
+                <span className="premium-eyebrow">💎 CLASSMATE PREMIUM</span>
+                <h2>{language === "en" ? "Study more. Unlock more." : "เรียนได้มากขึ้น ปลดล็อกได้มากขึ้น"}</h2>
+                <p>{language === "en" ? "Premium is currently a free prototype. No real payment is collected." : "Premium ตอนนี้เป็นระบบทดลองใช้งาน ยังไม่มีการเรียกเก็บเงินจริง"}</p>
+              </div>
+              <div className="premium-hero-icon">💎</div>
+            </section>
+
+            <div className="premium-status-card">
+              <div><span className="premium-status-label">{language === "en" ? "CURRENT PLAN" : "แพ็กเกจปัจจุบัน"}</span><h3>{isPremium ? "Premium 💎" : "Free"}</h3><p>{isPremium ? (premiumPlan === "yearly" ? "฿399 / year" : "฿50 / month") : (language === "en" ? "Basic ClassMate access" : "การใช้งาน ClassMate พื้นฐาน")}</p></div>
+              {isPremium && <span className="premium-active-pill">ACTIVE</span>}
+            </div>
+
+            <div className="premium-plans">
+              <section className="premium-plan-card">
+                <div className="premium-plan-head"><span>🆓</span><div><h3>Free</h3><p>{language === "en" ? "Essential study tools" : "ฟีเจอร์พื้นฐานสำหรับการเรียน"}</p></div></div>
+                <div className="premium-price">฿0 <small>/ {language === "en" ? "forever" : "ตลอดไป"}</small></div>
+                <ul><li>📚 My Classes</li><li>📅 Schedule</li><li>📝 Assignments</li><li>👤 Profile</li><li>⚙️ Settings</li><li>🏠 {language === "en" ? "Basic Dashboard" : "Dashboard พื้นฐาน"}</li><li className="premium-disabled">☁️ {language === "en" ? "No Backup / Sync" : "ไม่มี Backup / Sync"}</li></ul>
+                {!isPremium && <span className="premium-current-plan">{language === "en" ? "Current plan" : "แพ็กเกจปัจจุบัน"}</span>}
+              </section>
+
+              <section className="premium-plan-card premium-plan-featured">
+                <div className="premium-popular">💎 {language === "en" ? "PROTOTYPE" : "ระบบทดลอง"}</div>
+                <div className="premium-plan-head"><span>💎</span><div><h3>Premium</h3><p>{language === "en" ? "More tools for serious study" : "ฟีเจอร์เพิ่มเติมสำหรับการเรียน"}</p></div></div>
+                <div className="premium-price">฿50 <small>/ {language === "en" ? "month" : "เดือน"}</small></div>
+                <div className="premium-alt-price">or ฿399 / {language === "en" ? "year" : "ปี"}</div>
+                <ul><li>📊 {language === "en" ? "Detailed Smart Dashboard" : "Smart Dashboard แบบละเอียด"}</li><li>📚 {language === "en" ? "Higher class limit" : "เพิ่มจำนวนวิชาได้มากขึ้น"}</li><li>🔔 {language === "en" ? "Due-date assignment alerts" : "แจ้งเตือนงานใกล้ครบกำหนด"}</li><li>📅 {language === "en" ? "Advanced Schedule" : "Schedule แบบ Advanced"}</li><li>📈 {language === "en" ? "Learning statistics" : "สถิติการเรียน"}</li><li>☁️ {language === "en" ? "Backup / Sync" : "Backup / Sync ข้อมูล"}</li><li>🚫 {language === "en" ? "No Premium feature limits" : "ไม่มีข้อจำกัดของฟีเจอร์ Premium"}</li></ul>
+                {!isPremium ? <div className="premium-demo-actions"><button type="button" className="premium-upgrade-btn" onClick={() => activatePremiumDemo("monthly")}>✨ {language === "en" ? "Try Premium — ฿50 / month" : "ทดลอง Premium — ฿50 / เดือน"}</button><button type="button" className="premium-year-btn" onClick={() => activatePremiumDemo("yearly")}>Try yearly — ฿399 / {language === "en" ? "year" : "ปี"}</button></div> : <div className="premium-demo-actions"><button type="button" className="premium-upgrade-btn" onClick={() => setPage("home")}>💎 {language === "en" ? "Premium is active" : "Premium เปิดใช้งานแล้ว"}</button><button type="button" className="premium-reset-btn" onClick={resetPremiumDemo}>↩ {language === "en" ? "Reset to Free (Demo)" : "กลับเป็น Free (ทดลอง)"}</button></div>}
+              </section>
+            </div>
+
+            <div className="premium-demo-note">🧪 <strong>{language === "en" ? "Prototype mode:" : "โหมดทดลอง:"}</strong> {language === "en" ? "No real payment is processed. Premium status is saved on this device so you can test the features." : "ไม่มีการตัดเงินจริง สถานะ Premium จะถูกบันทึกไว้บนอุปกรณ์นี้เพื่อใช้ทดสอบฟีเจอร์"}</div>
+          </div>
+        )}
+
         {page === "settings" && (
           <div className="settings-page">
             <section className="settings-hero">
@@ -3751,6 +3978,44 @@ function App() {
                   </div>
                 </section>
 
+                <section className="settings-panel design-settings-panel">
+                  <div className="settings-panel-title">
+                    <div><span>✨</span><div><h3>{language === "en" ? "Design" : "ดีไซน์"}</h3><p>{language === "en" ? "Choose the visual style of ClassMate." : "เลือกสไตล์หน้าตาของ ClassMate"}</p></div></div>
+                  </div>
+
+                  <div className="design-options">
+                    <button
+                      type="button"
+                      className={`design-option ${settings.design === "glassmorphism" ? "active" : ""}`}
+                      onClick={() => selectDesign("glassmorphism")}
+                    >
+                      <span className="design-preview design-preview-glassmorphism">
+                        <i>🪟</i><b>ClassMate</b><em>FREE</em>
+                      </span>
+                      <strong>{language === "en" ? "Glassmorphism" : "Glassmorphism"}</strong>
+                      <small>{language === "en" ? "Free basic design" : "ดีไซน์พื้นฐาน ใช้ได้ฟรี"}</small>
+                    </button>
+
+                    <button
+                      type="button"
+                      className={`design-option ${settings.design === "liquid" ? "active" : ""} ${!isPremium ? "locked" : ""}`}
+                      onClick={() => selectDesign("liquid")}
+                    >
+                      <span className="design-preview design-preview-liquid">
+                        <i>💎</i><b>ClassMate</b><em>{isPremium ? "PREMIUM" : "🔒 PREMIUM"}</em>
+                      </span>
+                      <strong>{language === "en" ? "Liquid Glass" : "Liquid Glass"}</strong>
+                      <small>{isPremium ? (language === "en" ? "Premium design unlocked" : "ปลดล็อกด้วย Premium แล้ว") : (language === "en" ? "Premium only" : "สำหรับ Premium เท่านั้น")}</small>
+                    </button>
+                  </div>
+
+                  {!isPremium && (
+                    <div className="design-premium-note">
+                      💎 {language === "en" ? "Liquid Glass is available with Premium. Try Premium from the Premium page." : "Liquid Glass ใช้ได้เมื่อเป็น Premium กดทดลอง Premium ได้จากหน้า Premium"}
+                    </div>
+                  )}
+                </section>
+
                 <section className="settings-panel">
                   <div className="settings-panel-title"><div><span>🕐</span><div><h3>{language === "en" ? "Time & Calendar" : "เวลาและปฏิทิน"}</h3><p>{language === "en" ? "Set how your schedule is displayed." : "กำหนดรูปแบบการแสดงตารางเรียน"}</p></div></div></div>
                   <div className="settings-list">
@@ -3775,17 +4040,18 @@ function App() {
                       <small>{language === "en" ? "Backup includes your profile, classes, assignments, preferences and notification state. Passwords are never included." : "ไฟล์สำรองจะเก็บโปรไฟล์ รายวิชา งาน การตั้งค่า และสถานะการแจ้งเตือน โดยจะไม่เก็บรหัสผ่าน"}</small>
                     </div>
                     <div className="backup-actions">
-                      <button type="button" className="backup-action-btn" onClick={handleBackupData} disabled={!isLoggedIn}>
+                      <button type="button" className="backup-action-btn" onClick={handleBackupData} disabled={!isLoggedIn || !isPremium}>
                         <span>⬇️</span>
                         <span><strong>{language === "en" ? "Backup Data" : "สำรองข้อมูล"}</strong><small>{language === "en" ? "Download JSON file" : "บันทึกเป็นไฟล์ JSON"}</small></span>
                       </button>
                       <label className={`backup-action-btn ${!isLoggedIn ? "is-disabled" : ""}`}>
                         <span>⬆️</span>
                         <span><strong>{language === "en" ? "Restore Data" : "กู้คืนข้อมูล"}</strong><small>{language === "en" ? "Import a ClassMate backup" : "นำเข้าไฟล์สำรองของ ClassMate"}</small></span>
-                        <input className="backup-file-input" type="file" accept="application/json,.json" onChange={handleRestoreData} disabled={!isLoggedIn} />
+                        <input className="backup-file-input" type="file" accept="application/json,.json" onChange={handleRestoreData} disabled={!isLoggedIn || !isPremium} />
                       </label>
                     </div>
                   </div>
+                  {!isPremium && <div className="premium-lock-card"><span className="premium-lock-icon">🔒</span><strong>{language === "en" ? "Backup / Sync is Premium-only" : "Backup / Sync ใช้ได้เฉพาะ Premium"}</strong><p>{language === "en" ? "Upgrade to Premium to unlock Backup / Sync." : "สมัคร Premium เพื่อเปิดใช้งาน Backup / Sync"}</p><button type="button" className="premium-small-btn" onClick={() => { setPage("premium"); setMenuOpen(false); }}>💎 {language === "en" ? "View Premium" : "ดู Premium"}</button></div>}
                   <div className="backup-warning">⚠️ {language === "en" ? "Restoring replaces the current profile, classes, assignments and settings on this device." : "การกู้คืนจะแทนที่โปรไฟล์ รายวิชา งาน และการตั้งค่าปัจจุบันบนอุปกรณ์นี้"}</div>
                 </section>
               </div>
